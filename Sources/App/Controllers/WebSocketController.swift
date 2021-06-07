@@ -26,7 +26,7 @@ open class WSClientStore {
         self.store.values.filter { !$0.socket.isClosed }
     }
     
-    init(eventLoop: EventLoop, clients: [UUID: WSClient]) {
+    init(eventLoop: EventLoop, clients: [UUID: WSClient] = [:]) {
         self.eventLoop = eventLoop
         self.store = clients
     }
@@ -46,5 +46,22 @@ open class WSClientStore {
     deinit {
         let futures = self.store.values.map { $0.socket.close() }
         try! self.eventLoop.flatten(futures).wait()
+    }
+}
+
+class WebSocketController {
+    var clients: WSClientStore
+    
+    init(eventLoop: EventLoop) {
+        self.clients = WSClientStore(eventLoop: eventLoop)
+    }
+    
+    func connect(_ ws: WebSocket) {
+        ws.onBinary { [unowned self] ws, buffer in
+            if let msg = buffer.decodeWSMessage(WSConnect.self) {
+                let client = WSClient(id: msg.clientId, socket: ws)
+                self.clients.add(client)
+            }
+        }
     }
 }

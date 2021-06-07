@@ -2,15 +2,15 @@ import Fluent
 import Vapor
 
 func routes(_ app: Application) throws {
-    app.get { req in
-        return "It works!"
-    }
-
-    app.get("hello") { req -> String in
-        return "Hello, world!"
+    
+    let wsController = WebSocketController(eventLoop: app.eventLoopGroup.next())
+    let roomController = TTRoomController()
+    
+    app.webSocket("conn") { req, ws in
+        wsController.connect(ws)
     }
     
-    app.webSocket("echo") { req, ws in
-        print(ws)
+    app.webSocket("room") { req, ws in
+        roomController.connect(ws)
     }
 }
