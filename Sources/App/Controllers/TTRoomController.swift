@@ -52,11 +52,4 @@ class TTRoomController {
         
         room.players.append(player)
     }
-    
-    func connect(_ ws: WebSocket) {
-        // TODO: Parse request.
-        //    Either create new room or add user to existing room.
-        //    Upon create room, should return room ID.
-        //    Upon add user, should return success or failure
-    }
 }
