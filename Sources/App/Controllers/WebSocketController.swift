@@ -1,5 +1,5 @@
 //
-//  WSClient.swift
+//  WebSocketController.swift
 //  
 //
 //  Created by Nicholas Vanhaute on 6/7/21.
